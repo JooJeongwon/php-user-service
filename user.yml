@@ -7,7 +7,7 @@ services:
   # 1. User-Service (PHP/Apache)
   user-service:
     build: .  # 현재 폴더(user)의 Dockerfile을 사용해 이미지를 빌드
-    container_name: user-service-app # 컨테이너 이름
+    container_name: user # 컨테이너 이름
     ports:
       - "8080:80" # Mac의 8080 포트를 컨테이너 80 포트로 연결
     volumes:
