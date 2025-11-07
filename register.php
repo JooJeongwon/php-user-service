@@ -32,6 +32,12 @@ $email = $_POST['email'];
 $password = $_POST['password'];
 $name = $_POST['name'];
 
+// [role 기능] role 값 받기 (없으면 'user'가 기본값)
+$role = 'user'; // 기본값
+if (!empty($_POST['role']) && $_POST['role'] == 'guardian') {
+    $role = 'guardian';
+}
+
 try {
     // 5. [중복 검사] 이메일이 이미 존재하는지 확인
     $query_check = "SELECT id FROM user WHERE email = :email";
@@ -46,13 +52,14 @@ try {
         // 6. [보안] 비밀번호 해시 생성
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-        // 7. [DB 저장] 새 사용자 정보 삽입
-        $query_insert = "INSERT INTO user (email, name, password) VALUES (:email, :name, :password)";
+ // 7. [DB 저장] 새 사용자 정보 삽입 (role 추가)
+        $query_insert = "INSERT INTO user (email, name, password, role) VALUES (:email, :name, :password, :role)";
         $stmt_insert = $pdo->prepare($query_insert);
         $stmt_insert->execute([
             'email' => $email,
             'name' => $name,
-            'password' => $password_hash
+            'password' => $password_hash,
+            'role' => $role // role 값 추가     
         ]);
 
         // 8. [자동 로그인] 방금 가입한 유저의 ID로 세션 생성
@@ -63,6 +70,7 @@ try {
         $_SESSION['user_id'] = $new_user_id;
         $_SESSION['username'] = $name;
         $_SESSION['useremail'] = $email;
+        $_SESSION['role'] = $role; // [V2 기능] 세션에 role 저장
 
         $ret['result'] = "ok";
         $ret['msg'] = "회원가입이 완료되었음. 자동 로그인됨";

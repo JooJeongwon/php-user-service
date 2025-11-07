@@ -57,6 +57,7 @@ try {
         $_SESSION['user_id'] = $row['id'];
         $_SESSION['username'] = $row['name'];
         $_SESSION['useremail'] = $row['email'];
+        $_SESSION['role'] = $row['role'];
 
         $ret['result'] = "ok";
         $ret['msg'] = "정상 로그인이 되었음";
